@@ -2,6 +2,9 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id("androidx.navigation.safeargs.kotlin")
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
+
 }
 
 android {
@@ -41,6 +44,8 @@ dependencies {
 
     def nav_version = "2.3.5"
     def retrofit_version ="2.9.0"
+    def hilt_version = "2.35"
+
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.5.0'
@@ -65,5 +70,18 @@ dependencies {
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+
+    //Dagger - Hilt
+    implementation("com.google.dagger:hilt-android:$hilt_version")
+    kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
+
+    // Lifecycle
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
+
+
     
 }

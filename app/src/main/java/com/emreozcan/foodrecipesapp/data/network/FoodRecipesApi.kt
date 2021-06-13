@@ -1,4 +1,4 @@
-package com.emreozcan.foodrecipesapp.data
+package com.emreozcan.foodrecipesapp.data.network
 
 import com.emreozcan.foodrecipesapp.models.FoodModel
 import retrofit2.Response
