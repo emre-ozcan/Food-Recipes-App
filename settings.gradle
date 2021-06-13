@@ -1,0 +1,2 @@
+rootProject.name = "Food Recipes App"
+include ':app'
