@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:background="@color/lightGray"
     android:layout_height="match_parent"
-    tools:context=".FavoriteRecipesFragment">
+    tools:context=".ui.fragments.favorites.FavoriteRecipesFragment">
 
 
     <TextView

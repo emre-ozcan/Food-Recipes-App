@@ -1,13 +1,13 @@
-package com.emreozcan.foodrecipesapp
+package com.emreozcan.foodrecipesapp.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.emreozcan.foodrecipesapp.R
 import com.emreozcan.foodrecipesapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
