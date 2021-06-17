@@ -1,22 +1,25 @@
 package com.emreozcan.foodrecipesapp.ui.fragments.home
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.emreozcan.foodrecipesapp.MainViewModel
+import com.emreozcan.foodrecipesapp.viewmodels.MainViewModel
 import com.emreozcan.foodrecipesapp.R
 import com.emreozcan.foodrecipesapp.adapters.RecipesAdapter
 import com.emreozcan.foodrecipesapp.databinding.FragmentHomeBinding
-import com.emreozcan.foodrecipesapp.util.Constants.Companion.API_KEY
 import com.emreozcan.foodrecipesapp.util.NetworkResult
 import com.emreozcan.foodrecipesapp.util.addScrollHide
+import com.emreozcan.foodrecipesapp.util.observeOnce
 import com.emreozcan.foodrecipesapp.viewmodels.RecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -43,26 +46,44 @@ class HomeFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater,container,false)
+        binding.lifecycleOwner = this
+        binding.mainViewModel = mainViewModel
 
 
         setupRecyclerView()
-        getApiData()
+        readDatabase()
 
         return binding.root
     }
 
+    private fun readDatabase() {
+        lifecycleScope.launch {
+            mainViewModel.readRecipes.observeOnce(viewLifecycleOwner,{ database->
+                if (!database.isNullOrEmpty()){
+                    Log.e("Database","Local Cache")
+                    mAdapter.setData(database[0].foodModel)
+                    hideShimmerEffect()
+                }else{
+                    getApiData()
+                }
+            })
+        }
+
+    }
+
     private fun getApiData() {
+        Log.e("Database","From API")
         mainViewModel.getRecipes(recipeViewModel.applyQueries())
         mainViewModel.recipesResponse.observe(viewLifecycleOwner,{ response ->
             when(response){
                 is NetworkResult.Success->{
-                    hideShimmerEffect()
                     response.data?.let {
                         mAdapter.setData(it)
+                        hideShimmerEffect()
                     }
                 }
                 is NetworkResult.Error->{
-                    hideShimmerEffect()
+                    loadDataFromCache()
                     Toast.makeText(context,response.message.toString(),Toast.LENGTH_SHORT).show()
                 }
                 is NetworkResult.Loading->{
@@ -74,10 +95,20 @@ class HomeFragment : Fragment() {
 
         })
     }
+    private fun loadDataFromCache(){
+        mainViewModel.readRecipes.observe(viewLifecycleOwner,{database->
+            if (!database.isNullOrEmpty()){
+                mAdapter.setData(database[0].foodModel)
+            }
+        })
+        hideShimmerEffect()
+    }
     private fun setupRecyclerView() {
+        showShimmerEffect()
         binding.rvRecipes.adapter = mAdapter
         binding.rvRecipes.layoutManager = LinearLayoutManager(requireContext())
         binding.rvRecipes.addScrollHide(binding.floatingActionButton,requireActivity().findViewById(R.id.bottomNavigationView))
+
     }
     private fun showShimmerEffect(){
         binding.shimmerFrameLayout.startShimmer()
