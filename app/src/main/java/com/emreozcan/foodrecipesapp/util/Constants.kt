@@ -7,7 +7,7 @@ class Constants {
         const val BASE_URL = "https://api.spoonacular.com"
         const val API_KEY ="a88afbf1edb14bd18aa137db7fca0405"
 
-        //API Query Keys
+        // API Query Keys
         const val QUERY_NUMBER = "number"
         const val QUERY_API_KEY = "apiKey"
         const val QUERY_TYPE = "type"
@@ -15,8 +15,21 @@ class Constants {
         const val QUERY_RECIPE_INFORMATION = "addRecipeInformation"
         const val QUERY_INGREDIENTS = "fillIngredients"
 
-        //Room
+        // Room
         const val RECIPES_TABLE_NAME = "recipestable"
+
+        // DataStore - Bottom Sheet
+        const val DATASTORE_PREFERENCE_NAME = "food_recipes_preferences"
+        const val DEFAULT_RECIPES_NUMBER = "30"
+        const val DEFAULT_MEAL_TYPE = "main course"
+        const val DEFAULT_DIET_TYPE = "gluten free"
+
+        const val MEAL_TYPE_PREFERENCE_KEY = "mealType"
+        const val MEAL_TYPE_ID_PREFERENCE_KEY = "mealTypeId"
+
+        const val DIET_TYPE_PREFERENCE_KEY = "dietType"
+        const val DIET_TYPE_ID_PREFERENCE_KEY = "dietTypeId"
+
 
     }
 }

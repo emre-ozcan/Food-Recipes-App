@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.emreozcan.foodrecipesapp.viewmodels.MainViewModel
 import com.emreozcan.foodrecipesapp.R
@@ -23,6 +26,8 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
+
+    private val args by navArgs<HomeFragmentArgs>()
 
     private lateinit var mainViewModel: MainViewModel
     private lateinit var recipeViewModel: RecipeViewModel
@@ -52,6 +57,9 @@ class HomeFragment : Fragment() {
 
         setupRecyclerView()
         readDatabase()
+        binding.floatingActionButton.setOnClickListener {
+           findNavController().navigate(R.id.action_homeFragment_to_recipesBottomSheet)
+        }
 
         return binding.root
     }
@@ -59,7 +67,7 @@ class HomeFragment : Fragment() {
     private fun readDatabase() {
         lifecycleScope.launch {
             mainViewModel.readRecipes.observeOnce(viewLifecycleOwner,{ database->
-                if (!database.isNullOrEmpty()){
+                if (!database.isNullOrEmpty()&& ! args.backFromBottomSheet){
                     Log.e("Database","Local Cache")
                     mAdapter.setData(database[0].foodModel)
                     hideShimmerEffect()

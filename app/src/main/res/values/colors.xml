@@ -19,4 +19,12 @@
     <color name="green">#00C980</color>
     <color name="placeholderColor">@color/mediumGray</color>
 
+    <color name="checkedChipBackgroundColor">#206200EA</color>
+    <color name="chipBackgroundColor">@color/lightGray</color>
+
+    <color name="checkedChipTextColor">#6200EA</color>
+    <color name="chipTextColor">@color/darkGray</color>
+
+
+
 </resources>
