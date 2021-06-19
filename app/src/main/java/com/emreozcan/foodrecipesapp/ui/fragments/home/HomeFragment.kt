@@ -2,11 +2,10 @@ package com.emreozcan.foodrecipesapp.ui.fragments.home
 
 import android.os.Bundle
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
@@ -17,15 +16,17 @@ import com.emreozcan.foodrecipesapp.viewmodels.MainViewModel
 import com.emreozcan.foodrecipesapp.R
 import com.emreozcan.foodrecipesapp.adapters.RecipesAdapter
 import com.emreozcan.foodrecipesapp.databinding.FragmentHomeBinding
+import com.emreozcan.foodrecipesapp.util.NetworkListener
 import com.emreozcan.foodrecipesapp.util.NetworkResult
 import com.emreozcan.foodrecipesapp.util.addScrollHide
 import com.emreozcan.foodrecipesapp.util.observeOnce
 import com.emreozcan.foodrecipesapp.viewmodels.RecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private val args by navArgs<HomeFragmentArgs>()
 
@@ -33,6 +34,8 @@ class HomeFragment : Fragment() {
     private lateinit var recipeViewModel: RecipeViewModel
 
     private val mAdapter by lazy { RecipesAdapter() }
+
+    private lateinit var networkListener: NetworkListener
 
     private var _binding: FragmentHomeBinding?= null
     private val binding get() = _binding!!
@@ -54,14 +57,52 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.mainViewModel = mainViewModel
 
-
+        setHasOptionsMenu(true)
         setupRecyclerView()
-        readDatabase()
+
+        recipeViewModel.readBackOnline.observe(viewLifecycleOwner,{
+            recipeViewModel.backOnline = it
+        })
+
+
+        lifecycleScope.launchWhenCreated {
+            networkListener = NetworkListener()
+            networkListener.checkNetwork(requireContext()).collect { status->
+                recipeViewModel.networkStatus = status
+                recipeViewModel.showNetworkStatus()
+                readDatabase()
+            }
+        }
         binding.floatingActionButton.setOnClickListener {
-           findNavController().navigate(R.id.action_homeFragment_to_recipesBottomSheet)
+            if (recipeViewModel.networkStatus){
+                findNavController().navigate(R.id.action_homeFragment_to_recipesBottomSheet)
+            }else{
+                recipeViewModel.showNetworkStatus()
+            }
+
         }
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.recipes_menu,menu)
+
+        val search = menu.findItem(R.id.action_search)
+        val searchView = search.actionView as? SearchView
+        searchView?.isSubmitButtonEnabled = true
+        searchView?.setOnQueryTextListener(this)
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        if (query != null) {
+            searchApiData(query)
+        }
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        return true
     }
 
     private fun readDatabase() {
@@ -92,6 +133,7 @@ class HomeFragment : Fragment() {
                 }
                 is NetworkResult.Error->{
                     loadDataFromCache()
+                    hideShimmerEffect()
                     Toast.makeText(context,response.message.toString(),Toast.LENGTH_SHORT).show()
                 }
                 is NetworkResult.Loading->{
@@ -103,6 +145,30 @@ class HomeFragment : Fragment() {
 
         })
     }
+    private fun searchApiData(query: String){
+        showShimmerEffect()
+        mainViewModel.searchRecipes(recipeViewModel.searchQueries(query))
+        mainViewModel.searchedRecipesResponse.observe(viewLifecycleOwner,{
+            response->
+            when(response){
+                is NetworkResult.Success->{
+                    response.data?.let {
+                        mAdapter.setData(it)
+                        hideShimmerEffect()
+                    }
+                }
+                is NetworkResult.Error->{
+                    loadDataFromCache()
+                    hideShimmerEffect()
+                    Toast.makeText(context,response.message.toString(),Toast.LENGTH_SHORT).show()
+                }
+                is NetworkResult.Loading->{
+                    showShimmerEffect()
+                }
+            }
+        })
+    }
+
     private fun loadDataFromCache(){
         mainViewModel.readRecipes.observe(viewLifecycleOwner,{database->
             if (!database.isNullOrEmpty()){
@@ -133,6 +199,7 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
 
 
 }

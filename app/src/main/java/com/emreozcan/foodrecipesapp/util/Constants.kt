@@ -8,6 +8,7 @@ class Constants {
         const val API_KEY ="a88afbf1edb14bd18aa137db7fca0405"
 
         // API Query Keys
+        const val QUERY_KEY= "query"
         const val QUERY_NUMBER = "number"
         const val QUERY_API_KEY = "apiKey"
         const val QUERY_TYPE = "type"
@@ -29,6 +30,11 @@ class Constants {
 
         const val DIET_TYPE_PREFERENCE_KEY = "dietType"
         const val DIET_TYPE_ID_PREFERENCE_KEY = "dietTypeId"
+
+        const val INTERNET_CONNECTION_KEY = "backOnline"
+
+        //Bundle
+        const val RECIPE_BUNDLE = "recipeBundle"
 
 
     }

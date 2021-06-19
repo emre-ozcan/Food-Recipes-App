@@ -9,6 +9,7 @@ import com.emreozcan.foodrecipesapp.util.Constants.Companion.DEFAULT_DIET_TYPE
 import com.emreozcan.foodrecipesapp.util.Constants.Companion.DEFAULT_MEAL_TYPE
 import com.emreozcan.foodrecipesapp.util.Constants.Companion.DIET_TYPE_PREFERENCE_KEY
 import com.emreozcan.foodrecipesapp.util.Constants.Companion.DIET_TYPE_ID_PREFERENCE_KEY
+import com.emreozcan.foodrecipesapp.util.Constants.Companion.INTERNET_CONNECTION_KEY
 import com.emreozcan.foodrecipesapp.util.Constants.Companion.MEAL_TYPE_ID_PREFERENCE_KEY
 import com.emreozcan.foodrecipesapp.util.Constants.Companion.MEAL_TYPE_PREFERENCE_KEY
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -31,9 +32,31 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         val selectedDietType = stringPreferencesKey(DIET_TYPE_PREFERENCE_KEY)
         val selectedDietTypeId = intPreferencesKey(DIET_TYPE_ID_PREFERENCE_KEY)
 
+        val backOnline = booleanPreferencesKey(INTERNET_CONNECTION_KEY)
+
     }
 
-    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(DATASTORE_PREFERENCE_NAME)
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(DATASTORE_PREFERENCE_NAME)
+
+    suspend fun saveBackOnline(online: Boolean){
+        context.dataStore.edit { preferences->
+            preferences[PreferenceKeys.backOnline] = online
+        }
+    }
+
+    val readBackOnline: Flow<Boolean> = context.dataStore.data
+        .catch { exception->
+            if (exception is IOException){
+                emit(emptyPreferences())
+            }else{
+                throw exception
+            }
+        }.map { preferences->
+
+            val savedBackOnline = preferences[PreferenceKeys.backOnline] ?: false
+
+            savedBackOnline
+        }
 
     suspend fun saveMealAndDietType(mealType: String, mealTypeId: Int, dietType: String, dietTypeId: Int){
         context.dataStore.edit { preferences->

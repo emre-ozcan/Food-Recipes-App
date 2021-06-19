@@ -25,6 +25,10 @@
     <color name="checkedChipTextColor">#6200EA</color>
     <color name="chipTextColor">@color/darkGray</color>
 
+    <color name="actionBarBackgroundColor">@color/design_default_color_primary</color>
+
+
+
 
 
 </resources>
