@@ -4,9 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import androidx.lifecycle.*
 import com.emreozcan.foodrecipesapp.data.Repository
-import com.emreozcan.foodrecipesapp.data.database.RecipesEntity
+import com.emreozcan.foodrecipesapp.data.database.entities.FavoriteEntity
+import com.emreozcan.foodrecipesapp.data.database.entities.RecipesEntity
 import com.emreozcan.foodrecipesapp.models.FoodModel
 import com.emreozcan.foodrecipesapp.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,12 +26,31 @@ class MainViewModel @Inject constructor(
 ): AndroidViewModel(application){
 
     //Room
-    val readRecipes: LiveData<List<RecipesEntity>> = repository.local.readDatabase().asLiveData()
+    val readRecipes: LiveData<List<RecipesEntity>> = repository.local.readRecipes().asLiveData()
+    val readFavorites: LiveData<List<FavoriteEntity>> = repository.local.readFavorites().asLiveData()
 
     private fun insertRecipes(recipesEntity: RecipesEntity) =
         viewModelScope.launch(Dispatchers.IO) {
             repository.local.insertRecipes(recipesEntity)
         }
+
+    fun insertFavorite(favoriteEntity: FavoriteEntity) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.local.insertFavorite(favoriteEntity)
+        }
+
+    fun deleteFavorite(favoriteEntity: FavoriteEntity) =
+        viewModelScope.launch(Dispatchers.IO) {
+
+            repository.local.deleteFavorite(favoriteEntity)
+        }
+
+    private fun deleteAllFavorites() =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.local.deleteAllFavorites()
+        }
+
+
 
 
     //Retrofit

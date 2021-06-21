@@ -1,4 +1,4 @@
-package com.emreozcan.foodrecipesapp.data.database
+package com.emreozcan.foodrecipesapp.data.database.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

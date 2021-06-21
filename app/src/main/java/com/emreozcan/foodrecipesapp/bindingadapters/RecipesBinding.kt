@@ -1,10 +1,9 @@
 package com.emreozcan.foodrecipesapp.bindingadapters
 
-import android.view.TextureView
 import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import com.emreozcan.foodrecipesapp.data.database.RecipesEntity
+import com.emreozcan.foodrecipesapp.data.database.entities.RecipesEntity
 import com.emreozcan.foodrecipesapp.models.FoodModel
 import com.emreozcan.foodrecipesapp.util.NetworkResult
 
