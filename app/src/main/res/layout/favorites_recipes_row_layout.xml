@@ -51,7 +51,7 @@
                     android:fontFamily="@font/montserrat"
                     android:maxLines="2"
                     android:text="@{favorite.result.title}"
-                    android:textColor="@color/darker"
+                    android:textColor="@color/cardTitleColor"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -67,7 +67,7 @@
                     android:ellipsize="end"
                     android:maxLines="3"
                     parseHTML="@{favorite.result.summary}"
-                    android:textColor="@color/darkGray"
+                    android:textColor="@color/cardSummaryColor"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/favorite_title_rowRecipes"
                     app:layout_constraintTop_toBottomOf="@+id/favorite_title_rowRecipes" />

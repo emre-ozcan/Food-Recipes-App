@@ -20,6 +20,7 @@ class Constants {
         // Room
         const val RECIPES_TABLE_NAME = "recipestable"
         const val FAVORITE_TABLE_NAME= "favoritestable"
+        const val FOOD_JOKE_TABLE_NAME = "foodjoketable"
 
         // DataStore - Bottom Sheet
         const val DATASTORE_PREFERENCE_NAME = "food_recipes_preferences"

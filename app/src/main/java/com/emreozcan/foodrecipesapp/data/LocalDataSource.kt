@@ -2,6 +2,7 @@ package com.emreozcan.foodrecipesapp.data
 
 import com.emreozcan.foodrecipesapp.data.database.RecipesDao
 import com.emreozcan.foodrecipesapp.data.database.entities.FavoriteEntity
+import com.emreozcan.foodrecipesapp.data.database.entities.FoodJokeEntity
 import com.emreozcan.foodrecipesapp.data.database.entities.RecipesEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -11,6 +12,7 @@ class LocalDataSource @Inject constructor(
     private val recipesDao: RecipesDao
 ){
 
+    //Recipes
     fun readRecipes(): Flow<List<RecipesEntity>>{
         return recipesDao.readAllRecipes()
     }
@@ -19,6 +21,7 @@ class LocalDataSource @Inject constructor(
         recipesDao.insertRecipes(recipesEntity)
     }
 
+    //Favorites
     fun readFavorites(): Flow<List<FavoriteEntity>>{
         return recipesDao.readFavorites()
     }
@@ -33,6 +36,15 @@ class LocalDataSource @Inject constructor(
 
     suspend fun deleteAllFavorites(){
         recipesDao.deleteAllFavorites()
+    }
+
+    //Food Joke
+    fun readFoodJoke(): Flow<List<FoodJokeEntity>>{
+        return recipesDao.readFoodJoke()
+    }
+
+    suspend fun insertFoodJoke(foodJokeEntity: FoodJokeEntity){
+        recipesDao.insertFoodJoke(foodJokeEntity)
     }
 
 

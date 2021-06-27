@@ -4,11 +4,12 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.util.Log
 import androidx.lifecycle.*
 import com.emreozcan.foodrecipesapp.data.Repository
 import com.emreozcan.foodrecipesapp.data.database.entities.FavoriteEntity
+import com.emreozcan.foodrecipesapp.data.database.entities.FoodJokeEntity
 import com.emreozcan.foodrecipesapp.data.database.entities.RecipesEntity
+import com.emreozcan.foodrecipesapp.models.FoodJoke
 import com.emreozcan.foodrecipesapp.models.FoodModel
 import com.emreozcan.foodrecipesapp.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,6 +29,7 @@ class MainViewModel @Inject constructor(
     //Room
     val readRecipes: LiveData<List<RecipesEntity>> = repository.local.readRecipes().asLiveData()
     val readFavorites: LiveData<List<FavoriteEntity>> = repository.local.readFavorites().asLiveData()
+    val readFoodJoke: LiveData<List<FoodJokeEntity>> = repository.local.readFoodJoke().asLiveData()
 
     private fun insertRecipes(recipesEntity: RecipesEntity) =
         viewModelScope.launch(Dispatchers.IO) {
@@ -50,12 +52,15 @@ class MainViewModel @Inject constructor(
             repository.local.deleteAllFavorites()
         }
 
-
+    private fun insertFoodJoke(foodJokeEntity: FoodJokeEntity) = viewModelScope.launch(Dispatchers.IO) {
+        repository.local.insertFoodJoke(foodJokeEntity)
+    }
 
 
     //Retrofit
     var recipesResponse: MutableLiveData<NetworkResult<FoodModel>> = MutableLiveData()
     var searchedRecipesResponse: MutableLiveData<NetworkResult<FoodModel>> = MutableLiveData()
+    var foodJokeResponse: MutableLiveData<NetworkResult<FoodJoke>> = MutableLiveData()
 
     fun getRecipes(queries: Map<String,String>)= viewModelScope.launch {
         getRecipesSafeCall(queries)
@@ -63,6 +68,50 @@ class MainViewModel @Inject constructor(
 
     fun searchRecipes(queries: Map<String, String>) = viewModelScope.launch {
         searchRecipesSafeCall(queries)
+    }
+
+    fun getFoodJoke(apiKey: String) = viewModelScope.launch {
+        getFoodSafeCall(apiKey)
+    }
+
+    private suspend fun getFoodSafeCall(apiKey: String) {
+        foodJokeResponse.value = NetworkResult.Loading()
+        if (hasInternetConnection()){
+            try {
+                val response = repository.remote.getFoodJoke(apiKey)
+                foodJokeResponse.value = handleFoodJokeResponse(response)
+
+                val foodJoke = foodJokeResponse.value!!.data
+                if (foodJoke != null) {
+                    offlineCacheFoodJoke(foodJoke)
+                }
+
+            }catch (e: Exception){
+                foodJokeResponse.value = NetworkResult.Error("Recipies could not found")
+            }
+
+        }else{
+            foodJokeResponse.value = NetworkResult.Error("There Is Any Internet Connection!")
+        }
+    }
+
+    private fun handleFoodJokeResponse(response: Response<FoodJoke>): NetworkResult<FoodJoke>? {
+        when{
+            response.message().toString().contains("timeout")->{
+                return NetworkResult.Error("Timeout")
+            }
+
+            response.code() == 402 -> {
+                return NetworkResult.Error("API Key Limited")
+            }
+            response.isSuccessful->{
+                val foodJoke = response.body()
+                return NetworkResult.Success(foodJoke!!)
+            }
+            else-> {
+                return NetworkResult.Error(response.message())
+            }
+        }
     }
 
     private suspend fun getRecipesSafeCall(queries: Map<String, String>) {
@@ -106,6 +155,10 @@ class MainViewModel @Inject constructor(
 
     private fun offlineCacheRecipes(foodRecipes: FoodModel) {
         insertRecipes(RecipesEntity(foodRecipes))
+    }
+
+    private fun offlineCacheFoodJoke(foodJoke: FoodJoke){
+        insertFoodJoke(FoodJokeEntity(foodJoke))
     }
 
     private fun handleFoodRecipesResponse(response: Response<FoodModel>): NetworkResult<FoodModel>? {

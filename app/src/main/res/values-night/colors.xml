@@ -17,30 +17,30 @@
     <color name="red">#FF4646</color>
     <color name="yellow">#FFC114</color>
     <color name="green">#00C980</color>
-    <color name="placeholderColor">@color/mediumGray</color>
 
-    <color name="backgroundColor">@color/lightGray</color>
 
-    <color name="checkedChipBackgroundColor">#206200EA</color>
-    <color name="chipBackgroundColor">@color/lightGray</color>
 
-    <color name="checkedChipTextColor">#6200EA</color>
-    <color name="chipTextColor">@color/darkGray</color>
+    <color name="backgroundColor">@color/dark</color>
 
-    <color name="actionBarBackgroundColor">@color/design_default_color_primary</color>
-    <color name="statusBarColor">@color/purple_700</color>
+    <color name="checkedChipBackgroundColor">@color/dark</color>
+    <color name="chipBackgroundColor">@color/darker</color>
+    <color name="checkedChipTextColor">@color/lightGray</color>
+    <color name="chipTextColor">@color/lightGray</color>
+
+    <color name="actionBarBackgroundColor">@color/darker</color>
+    <color name="statusBarColor">@color/black</color>
     <color name="contextualStatusBarColor">@color/darker</color>
-    <color name="contextualActionBarColor">@color/dark</color>
+    <color name="contextualActionBarColor">@color/darker</color>
 
-    <color name="cardBackgroundColor">@color/white</color>
-    <color name="cardBackgroundLightColor">#F8F3FF</color>
-    <color name="cardTitleColor">@color/darker</color>
-    <color name="cardSummaryColor">@color/darkGray</color>
+    <color name="cardBackgroundColor">@color/darker</color>
+    <color name="cardBackgroundLightColor">@color/darker</color>
+    <color name="cardTitleColor">@color/lightGray</color>
     <color name="strokeColor">@color/lightMediumGray</color>
+    <color name="cardSummaryColor">@color/lightMediumGray</color>
+    <color name="placeholderColor">@color/darker</color>
 
     <color name="bottomNavItemColor">@color/mediumGray</color>
-    <color name="bottomNavCheckedItemColor">@color/purple_500</color>
-
+    <color name="bottomNavCheckedItemColor">@color/purple_200</color>
 
 
 

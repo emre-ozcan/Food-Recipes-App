@@ -1,8 +1,10 @@
 package com.emreozcan.foodrecipesapp.data.network
 
+import com.emreozcan.foodrecipesapp.models.FoodJoke
 import com.emreozcan.foodrecipesapp.models.FoodModel
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 interface FoodRecipesApi {
@@ -13,4 +15,7 @@ interface FoodRecipesApi {
 
     @GET("/recipes/complexSearch")
     suspend fun searchRecipes(@QueryMap searchQuery: Map<String,String>) : Response<FoodModel>
+
+    @GET("food/jokes/random")
+    suspend fun getFoodJoke(@Query("apiKey") apiKey: String): Response<FoodJoke>
 }

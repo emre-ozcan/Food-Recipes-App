@@ -12,7 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/lightGray"
+        android:background="@color/backgroundColor"
         tools:context=".ui.fragments.home.HomeFragment">
 
         <TextView
@@ -22,7 +22,6 @@
             android:text="There is any internet connection."
             readApiResponse="@{mainViewModel.recipesResponse}"
             readDatabase="@{mainViewModel.readRecipes}"
-            android:textColor="@color/lightMediumGray"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="@+id/imageView"
             app:layout_constraintStart_toStartOf="@+id/imageView"
