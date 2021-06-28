@@ -54,6 +54,7 @@ class FavoritesAdapter(private val requireActivity: FragmentActivity,private val
         myViewHolderList.add(holder)
 
         rootView = holder.itemView.rootView
+        saveItemStateOnScroll(currentRecipe,holder)
 
         //Single Click
         holder.binding.favoriteCardView.setOnClickListener {
@@ -78,15 +79,23 @@ class FavoritesAdapter(private val requireActivity: FragmentActivity,private val
                 applySelection(holder,currentRecipe)
                 true
             }else{
-                multiSelection = false
-                false
+                applySelection(holder,currentRecipe)
+                true
             }
 
         }
 
     }
+    private fun saveItemStateOnScroll(currentRecipe: FavoriteEntity,holder: MyViewHolder){
+        if (selectedRecipes.contains(currentRecipe)){
+            changeCardStyle(holder,R.color.cardBackgroundLightColor,R.color.purple_500)
+        }else{
+            changeCardStyle(holder,R.color.cardBackgroundColor,R.color.strokeColor)
+        }
+    }
 
     private fun applySelection(holder: MyViewHolder,currentRecipe: FavoriteEntity){
+
         if (selectedRecipes.contains(currentRecipe)){
             selectedRecipes.remove(currentRecipe)
             changeCardStyle(holder,R.color.cardBackgroundColor,R.color.strokeColor)
@@ -116,8 +125,10 @@ class FavoritesAdapter(private val requireActivity: FragmentActivity,private val
     private fun applyActionModeTitle(){
         when(selectedRecipes.size){
 
-            0 -> mActionMode.finish()
-
+            0 -> {
+                multiSelection = false
+                mActionMode.finish()
+            }
             1 -> mActionMode.title = "1 item selected"
 
             else -> mActionMode.title = "${selectedRecipes.size} items selected"
@@ -154,7 +165,6 @@ class FavoritesAdapter(private val requireActivity: FragmentActivity,private val
         myViewHolderList.forEach{
             changeCardStyle(it,R.color.cardBackgroundColor,R.color.strokeColor)
         }
-
         multiSelection = false
         selectedRecipes.clear()
         applyStatusBarColor(R.color.statusBarColor)

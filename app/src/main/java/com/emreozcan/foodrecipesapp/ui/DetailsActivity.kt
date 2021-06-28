@@ -18,6 +18,7 @@ import com.emreozcan.foodrecipesapp.ui.fragments.overview.OverviewFragment
 import com.emreozcan.foodrecipesapp.util.Constants.Companion.RECIPE_BUNDLE
 import com.emreozcan.foodrecipesapp.viewmodels.MainViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -39,28 +40,32 @@ class DetailsActivity : AppCompatActivity() {
         binding.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        binding.viewPager.adapter = getAdapter()
-        binding.tabLayout.setupWithViewPager(binding.viewPager)
+        val titles = ArrayList<String>().apply {
+            add("Overview")
+            add("Ingredients")
+            add("Instructions")
+        }
 
+        binding.viewPager2.apply {
+            adapter = getPagerAdapter()
+        }
+
+        TabLayoutMediator(binding.tabLayout,binding.viewPager2){tab, position ->
+            tab.text = titles[position]
+        }.attach()
 
     }
 
-    private fun getAdapter(): PagerAdapter {
+    private fun getPagerAdapter(): PagerAdapter {
         val fragments = ArrayList<Fragment>()
         fragments.add(OverviewFragment())
         fragments.add(IngredientsFragment())
         fragments.add(InstructionsFragment())
 
-        val titles = ArrayList<String>()
-        titles.add("Overview")
-        titles.add("Ingredients")
-        titles.add("Instructions")
-
         val resultBundle = Bundle()
         resultBundle.putParcelable(RECIPE_BUNDLE, args.result)
 
-        val adapter = PagerAdapter(resultBundle, fragments, titles, supportFragmentManager)
-        return adapter
+        return PagerAdapter(resultBundle, fragments, this)
 
     }
 

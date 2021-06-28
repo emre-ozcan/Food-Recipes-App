@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import coil.load
 import com.emreozcan.foodrecipesapp.R
@@ -26,50 +28,33 @@ class OverviewFragment : Fragment() {
         _binding = FragmentOverviewBinding.inflate(inflater,container,false)
 
         val args = arguments
-        val recipe: Result? = args?.getParcelable(RECIPE_BUNDLE)
+        val recipe: Result = args!!.getParcelable<Result>(RECIPE_BUNDLE) as Result
 
-        binding.recipeImageDtl.load(recipe?.image)
+        binding.recipeImageDtl.load(recipe.image)
 
-        binding.recipeTitle.text = recipe?.title
-        binding.likesTextView.text = recipe?.aggregateLikes.toString()
-        binding.timeTextView.text = recipe?.readyInMinutes.toString()
+        binding.recipeTitle.text = recipe.title
+        binding.likesTextView.text = recipe.aggregateLikes.toString()
+        binding.timeTextView.text = recipe.readyInMinutes.toString()
 
-        recipe?.summary?.let {
+        recipe.summary.let {
             binding.summaryTextView.text = Jsoup.parse(it).text()
         }
 
-        if (recipe?.vegetarian==true){
-            binding.vegetarianTextView.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
-            binding.vegetarianImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.green))
-        }
-
-        if (recipe?.vegan==true){
-            binding.veganTextView.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
-            binding.veganImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.green))
-        }
-
-        if (recipe?.glutenFree==true){
-            binding.glutenTextView.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
-            binding.glutenFreeImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.green))
-        }
-
-        if (recipe?.dairyFree==true){
-            binding.dairyTextView.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
-            binding.dairyFreeImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.green))
-        }
-
-        if (recipe?.veryHealthy==true){
-            binding.healthyTextView.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
-            binding.healthyImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.green))
-        }
-
-        if (recipe?.cheap==true){
-            binding.cheapTextView.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
-            binding.cheapImageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.green))
-        }
+        updateColors(recipe.vegetarian,binding.vegetarianTextView,binding.vegetarianImageView)
+        updateColors(recipe.vegan,binding.veganTextView,binding.veganImageView)
+        updateColors(recipe.cheap,binding.cheapTextView,binding.cheapImageView)
+        updateColors(recipe.dairyFree,binding.dairyTextView,binding.dairyFreeImageView)
+        updateColors(recipe.glutenFree,binding.glutenTextView,binding.glutenFreeImageView)
+        updateColors(recipe.veryHealthy,binding.healthyTextView,binding.healthyImageView)
 
 
         return binding.root
+    }
+    private fun updateColors(bool: Boolean,textView: TextView,imageView: ImageView){
+        if (bool){
+            imageView.setColorFilter(ContextCompat.getColor(requireContext(),R.color.green))
+            textView.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
+        }
     }
 
     override fun onDestroyView() {

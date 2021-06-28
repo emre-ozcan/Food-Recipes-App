@@ -17,10 +17,8 @@ class RecipesBinding {
             if (apiResponse is NetworkResult.Error && database.isNullOrEmpty()){
                 view.visibility = View.VISIBLE
 
-                when (view) {
-                    is TextView -> {
-                        view.text = apiResponse.message.toString()
-                    }
+                if (view is TextView) {
+                    view.text = apiResponse.message.toString()
                 }
 
             }else{
