@@ -31,5 +31,5 @@ These are mainly used in this application :</br>
 </br> 
 
 ➡️ [API](https://spoonacular.com/food-api) </br></br>
-➡️I developed this application according to this [Udemy Course](https://www.udemy.com/course/modern-food-recipes-app-android-development-with-kotlin/)</br></br>
+➡️ I developed this application according to this [Udemy Course](https://www.udemy.com/course/modern-food-recipes-app-android-development-with-kotlin/)</br></br>
 ➡️ [Course Certificate](https://www.udemy.com/certificate/UC-4c15026b-023c-4f6d-88a1-bf9f4ea406f7/)
